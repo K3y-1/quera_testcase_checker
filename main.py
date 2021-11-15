@@ -1,9 +1,6 @@
 from subprocess import Popen, PIPE
 import os, re, sys
 
-def get_input_file_number(string):
-    return int(regex.match(string).groups()[0])
-
 def difference(a, b):
     a = a.split('\n')
     b = b.split('\n')
@@ -26,11 +23,11 @@ def difference(a, b):
         else:
             a[i] = '\n>' + line1 + '<\n'
             b[i] = '\n>' + line2 + '<\n'
-            
+
     return int(correct_lines / total_lines * 100), (total_lines - correct_lines), a, b
 
 
-            
+
 if __name__ == "__main__":
     args = sys.argv
 
@@ -41,7 +38,7 @@ if __name__ == "__main__":
         exit(0)
 
     LOG_PERCENTAGE = 100
-    PRINT_INPUT = False
+    PRINT_INPUT = True
 
     input_directory_list = os.listdir('./in')
     output_directory_list = os.listdir('./out')
@@ -51,8 +48,9 @@ if __name__ == "__main__":
         exit(0)
 
     regex = re.compile(r'input(\d+).txt')
-    input_directory_list.sort(key=get_input_file_number)
-    
+    input_directory_list.sort(key=\
+        lambda string: int(regex.match(string).groups()[0]))
+
     for i, inp in enumerate(input_directory_list):
         out = inp.replace('input', 'output')
         process = Popen([EXECUTABLE], stdout=PIPE, stdin=PIPE)
@@ -62,7 +60,7 @@ if __name__ == "__main__":
                 out_text = out_f.read()
                 output = process.communicate(input=bytes(in_text, 'utf-8'))[0].decode()
                 diff, wrone_lines, output, out_text = difference(output, out_text)
-                if(wrone_lines):
+                if(wrone_lines and LOG_PERCENTAGE):
                     print('#' * 70, end='\n\n')
                 print(f'{out} -> {diff}%')
 
